@@ -1077,30 +1077,30 @@ export default function App() {
       <div className="relative min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 selection:bg-blue-600 selection:text-white pb-12">
         
         {/* Background ambient decorative blurs */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-600/10 rounded-full blur-[130px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-72 h-72 bg-indigo-500/10 rounded-full blur-[110px] pointer-events-none"></div>
 
-        <div className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative z-10 transition-all duration-300 my-6">
+        <div className="w-full max-w-sm bg-zinc-900/90 backdrop-blur-2xl border border-zinc-800/80 p-6 md:p-8 rounded-[32px] shadow-2xl relative z-10 transition-all duration-300 my-6">
           
           {/* Brand Presentation Section with Custom Premium Logo */}
           <div className="text-center mb-8">
             <div className="relative inline-block mb-3 group">
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-3xl blur opacity-35 group-hover:opacity-60 transition duration-300"></div>
               <img 
                 src="https://i.ibb.co/1fngZNzk/icon-512.png" 
                 alt="Duty Tracker Pro Logo" 
-                className="relative w-16 h-16 rounded-2xl object-cover border border-zinc-700/50 shadow-md transform group-hover:scale-105 transition-all duration-300" 
+                className="relative w-20 h-20 rounded-[24px] object-cover border border-zinc-700/50 shadow-lg transform group-hover:scale-105 transition-all duration-300" 
               />
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">
-              Duty Tracker <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Pro</span>
+            <h1 className="text-2xl font-extrabold text-white tracking-tight">
+              Duty Tracker <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Pro</span>
             </h1>
-            <p className="text-zinc-400 text-xs mt-1 font-medium">Professional Duty & Advanced Ledger Suite</p>
+            <p className="text-zinc-500 text-xs mt-1.5 font-medium tracking-wide">Professional Duty & Advanced Ledger Suite</p>
           </div>
 
           {/* Quick PWA Installation Indicator if browser supports it */}
           {showInstallBanner && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-zinc-950 to-zinc-900 border border-blue-500/20 rounded-2xl flex items-center justify-between gap-3 animate-fade-in">
+            <div className="mb-6 p-4 bg-zinc-950 border border-blue-500/20 rounded-[20px] flex items-center justify-between gap-3 animate-fade-in">
               <div className="flex items-center gap-3">
                 <img src="https://i.ibb.co/1fngZNzk/icon-512.png" alt="App Logo" className="w-9 h-9 rounded-xl object-cover" />
                 <div className="text-left">
@@ -1117,33 +1117,41 @@ export default function App() {
             </div>
           )}
 
-          {/* Luxury Tab Switcher */}
-          <div className="flex bg-zinc-950 p-1.5 rounded-2xl mb-6 border border-zinc-800">
+          {/* High-End Segmented Sliding Tab Switcher */}
+          <div className="flex bg-zinc-950 p-1 rounded-[24px] mb-7 border border-zinc-800/80 shadow-inner relative overflow-hidden">
             <button 
-              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-350 flex items-center justify-center gap-2 ${activeTab === 'login' ? 'bg-zinc-800 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'}`}
+              className={`flex-1 py-3 text-xs font-black rounded-[18px] transition-all duration-300 flex items-center justify-center gap-2 relative z-10 cursor-pointer ${
+                activeTab === 'login' 
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30' 
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30'
+              }`}
               onClick={() => setActiveTab('login')}
             >
-              <i className="fas fa-sign-in-alt text-[10px]"></i>
-              Employee Login
+              <i className="fas fa-shield-halved text-[11px]"></i>
+              <span>Employee Login</span>
             </button>
             <button 
-              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-350 flex items-center justify-center gap-2 ${activeTab === 'signup' ? 'bg-zinc-800 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'}`}
+              className={`flex-1 py-3 text-xs font-black rounded-[18px] transition-all duration-300 flex items-center justify-center gap-2 relative z-10 cursor-pointer ${
+                activeTab === 'signup' 
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30' 
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30'
+              }`}
               onClick={() => setActiveTab('signup')}
             >
-              <i className="fas fa-user-plus text-[10px]"></i>
-              Employer Register
+              <i className="fas fa-building text-[11px]"></i>
+              <span>Employer Register</span>
             </button>
           </div>
 
           {activeTab === 'login' ? (
             <div className="space-y-4 text-left">
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Cellular Dial</label>
+                <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">Cellular Dial</label>
                 <div className="flex gap-2.5">
                   {/* Styled Country Custom Selection Row Dropdown */}
                   <button 
                     type="button"
-                    className="w-24 h-[50px] px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-2xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40 shrink-0"
+                    className="w-[90px] h-[52px] px-3.5 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-2xl text-white text-xs font-black flex items-center justify-between transition-all focus:ring-2 focus:ring-blue-500/40 shrink-0 cursor-pointer"
                     onClick={() => setShowCountryModal('login')}
                   >
                     <span>{authCountry.c}</span>
@@ -1152,7 +1160,7 @@ export default function App() {
                   <input 
                     type="number" 
                     placeholder="Phone Number" 
-                    className="inp flex-1 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp flex-1 h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authPhone}
                     onChange={(e) => setAuthPhone(e.target.value)}
                   />
@@ -1160,16 +1168,16 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Security Code (PIN)</label>
+                <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">Security Code (PIN)</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <div className="absolute left-4.5 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
                     <i className="fas fa-lock"></i>
                   </div>
                   <input 
                     type="password" 
                     maxLength={4}
                     placeholder="Enter 4-digit PIN" 
-                    className="inp pl-11 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp pl-12 h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authPin}
                     onChange={(e) => setAuthPin(e.target.value)}
                   />
@@ -1177,7 +1185,7 @@ export default function App() {
               </div>
 
               <button 
-                className="w-full mt-6 h-[50px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-2xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2 cursor-pointer" 
+                className="w-full mt-6 h-[52px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] text-white text-xs font-black rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 cursor-pointer tracking-wider" 
                 onClick={handleLogin}
               >
                 <span>VERIFY & UNLOCK SYSTEM</span>
@@ -1187,15 +1195,15 @@ export default function App() {
           ) : (
             <div className="space-y-4 text-left">
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Legal Name</label>
+                <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">Legal Name</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <div className="absolute left-4.5 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
                     <i className="fas fa-user-circle"></i>
                   </div>
                   <input 
                     type="text" 
                     placeholder="John Doe" 
-                    className="inp pl-11 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp pl-12 h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authName}
                     onChange={(e) => setAuthName(e.target.value)}
                   />
@@ -1203,15 +1211,15 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Primary Email ID</label>
+                <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">Primary Email ID</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <div className="absolute left-4.5 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
                     <i className="fas fa-envelope"></i>
                   </div>
                   <input 
                     type="email" 
                     placeholder="me@domain.com" 
-                    className="inp pl-11 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp pl-12 h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authEmail}
                     onChange={(e) => setAuthEmail(e.target.value)}
                   />
@@ -1219,11 +1227,11 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Cellular Connection</label>
+                <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">Cellular Connection</label>
                 <div className="flex gap-2.5">
                   <button 
                     type="button"
-                    className="w-24 h-[50px] px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-2xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40 shrink-0"
+                    className="w-[90px] h-[52px] px-3.5 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-2xl text-white text-xs font-black flex items-center justify-between transition-all focus:ring-2 focus:ring-blue-500/40 shrink-0 cursor-pointer"
                     onClick={() => setShowCountryModal('signup')}
                   >
                     <span>{authCountry.c}</span>
@@ -1232,7 +1240,7 @@ export default function App() {
                   <input 
                     type="number" 
                     placeholder="Cell Number" 
-                    className="inp flex-1 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp flex-1 h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authPhone}
                     onChange={(e) => setAuthPhone(e.target.value)}
                   />
@@ -1241,23 +1249,23 @@ export default function App() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Set 4-digit PIN</label>
+                  <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">4-digit PIN</label>
                   <input 
                     type="password" 
                     maxLength={4}
                     placeholder="Set PIN" 
-                    className="inp text-center tracking-widest h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp text-center tracking-widest h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authPin}
                     onChange={(e) => setAuthPin(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Confirm PIN</label>
+                  <label className="block text-[11px] uppercase tracking-widest font-black text-zinc-500 mb-2 ml-1">Confirm PIN</label>
                   <input 
                     type="password" 
                     maxLength={4}
                     placeholder="Confirm" 
-                    className="inp text-center tracking-widest h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
+                    className="inp text-center tracking-widest h-[52px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-all focus:ring-2 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4 text-sm font-medium"
                     value={authPinConfirm}
                     onChange={(e) => setAuthPinConfirm(e.target.value)}
                   />
@@ -1265,7 +1273,7 @@ export default function App() {
               </div>
 
               <button 
-                className="w-full mt-6 h-[50px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-2xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2 cursor-pointer" 
+                className="w-full mt-6 h-[52px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] text-white text-xs font-black rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 cursor-pointer tracking-wider" 
                 onClick={handleSignup}
               >
                 <span>CREATE WORKSPACE SECURELY</span>
@@ -1300,13 +1308,13 @@ export default function App() {
 
               {/* Real-time search bar */}
               <div className="relative mb-4">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
                   <i className="fas fa-search"></i>
                 </div>
                 <input 
                   type="text" 
                   placeholder="Search countries by name or prefix..."
-                  className="inp pl-10 mb-0 text-sm bg-zinc-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="inp pl-11 h-[48px] !m-0 text-sm bg-zinc-950 focus:border-blue-500/80 focus:ring-2 focus:ring-blue-500/20 rounded-2xl placeholder-zinc-600 font-medium"
                   value={countrySearch}
                   onChange={(e) => setCountrySearch(e.target.value)}
                 />
