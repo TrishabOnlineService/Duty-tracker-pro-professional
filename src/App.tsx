@@ -225,6 +225,26 @@ export default function App() {
     }
   };
 
+  // Dynamic Body spacing controller depending on authentication state
+  useEffect(() => {
+    if (!uid) {
+      document.body.style.height = 'auto';
+      document.body.style.minHeight = '100vh';
+      document.body.style.paddingBottom = '0px';
+      document.body.style.overflowY = 'auto';
+    } else {
+      document.body.style.height = '100vh';
+      document.body.style.paddingBottom = 'var(--nav-height)';
+      document.body.style.overflowY = 'hidden';
+    }
+    return () => {
+      document.body.style.height = '';
+      document.body.style.minHeight = '';
+      document.body.style.paddingBottom = '';
+      document.body.style.overflowY = '';
+    };
+  }, [uid]);
+
   // Ads service listener
   useEffect(() => {
     AdService.updateAds(isPremiumUser);
@@ -1054,13 +1074,13 @@ export default function App() {
   // Auth screen layout
   if (!uid) {
     return (
-      <div className="relative min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 selection:bg-blue-600 selection:text-white">
+      <div className="relative min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 selection:bg-blue-600 selection:text-white pb-12">
         
         {/* Background ambient decorative blurs */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative z-10 transition-all duration-300">
+        <div className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative z-10 transition-all duration-300 my-6">
           
           {/* Brand Presentation Section with Custom Premium Logo */}
           <div className="text-center mb-8">
@@ -1123,7 +1143,7 @@ export default function App() {
                   {/* Styled Country Custom Selection Row Dropdown */}
                   <button 
                     type="button"
-                    className="w-24 px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40"
+                    className="w-24 h-[50px] px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-2xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40 shrink-0"
                     onClick={() => setShowCountryModal('login')}
                   >
                     <span>{authCountry.c}</span>
@@ -1132,7 +1152,7 @@ export default function App() {
                   <input 
                     type="number" 
                     placeholder="Phone Number" 
-                    className="inp flex-1 !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp flex-1 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authPhone}
                     onChange={(e) => setAuthPhone(e.target.value)}
                   />
@@ -1142,14 +1162,14 @@ export default function App() {
               <div>
                 <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Security Code (PIN)</label>
                 <div className="relative">
-                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
                     <i className="fas fa-lock"></i>
                   </div>
                   <input 
                     type="password" 
                     maxLength={4}
                     placeholder="Enter 4-digit PIN" 
-                    className="inp pl-10 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp pl-11 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authPin}
                     onChange={(e) => setAuthPin(e.target.value)}
                   />
@@ -1157,7 +1177,7 @@ export default function App() {
               </div>
 
               <button 
-                className="w-full mt-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2" 
+                className="w-full mt-6 h-[50px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-2xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2 cursor-pointer" 
                 onClick={handleLogin}
               >
                 <span>VERIFY & UNLOCK SYSTEM</span>
@@ -1169,13 +1189,13 @@ export default function App() {
               <div>
                 <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Legal Name</label>
                 <div className="relative">
-                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
                     <i className="fas fa-user-circle"></i>
                   </div>
                   <input 
                     type="text" 
                     placeholder="John Doe" 
-                    className="inp pl-10 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp pl-11 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authName}
                     onChange={(e) => setAuthName(e.target.value)}
                   />
@@ -1185,13 +1205,13 @@ export default function App() {
               <div>
                 <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Primary Email ID</label>
                 <div className="relative">
-                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
                     <i className="fas fa-envelope"></i>
                   </div>
                   <input 
                     type="email" 
                     placeholder="me@domain.com" 
-                    className="inp pl-10 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp pl-11 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authEmail}
                     onChange={(e) => setAuthEmail(e.target.value)}
                   />
@@ -1203,7 +1223,7 @@ export default function App() {
                 <div className="flex gap-2.5">
                   <button 
                     type="button"
-                    className="w-24 px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40"
+                    className="w-24 h-[50px] px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-2xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40 shrink-0"
                     onClick={() => setShowCountryModal('signup')}
                   >
                     <span>{authCountry.c}</span>
@@ -1212,7 +1232,7 @@ export default function App() {
                   <input 
                     type="number" 
                     placeholder="Cell Number" 
-                    className="inp flex-1 !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp flex-1 h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authPhone}
                     onChange={(e) => setAuthPhone(e.target.value)}
                   />
@@ -1226,7 +1246,7 @@ export default function App() {
                     type="password" 
                     maxLength={4}
                     placeholder="Set PIN" 
-                    className="inp text-center tracking-widest bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp text-center tracking-widest h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authPin}
                     onChange={(e) => setAuthPin(e.target.value)}
                   />
@@ -1237,7 +1257,7 @@ export default function App() {
                     type="password" 
                     maxLength={4}
                     placeholder="Confirm" 
-                    className="inp text-center tracking-widest bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    className="inp text-center tracking-widest h-[50px] !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500 rounded-2xl placeholder-zinc-600 px-4"
                     value={authPinConfirm}
                     onChange={(e) => setAuthPinConfirm(e.target.value)}
                   />
@@ -1245,7 +1265,7 @@ export default function App() {
               </div>
 
               <button 
-                className="w-full mt-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2" 
+                className="w-full mt-6 h-[50px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-2xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2 cursor-pointer" 
                 onClick={handleSignup}
               >
                 <span>CREATE WORKSPACE SECURELY</span>
