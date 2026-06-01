@@ -65,6 +65,10 @@ export default function App() {
   const [countrySearch, setCountrySearch] = useState('');
   const [showCountryModal, setShowCountryModal] = useState<'login' | 'signup' | null>(null);
 
+  // PWA Support States
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+
   // Attendance Entry states
   const [selDate, setSelDate] = useState<string>('');
   const [selStatus, setSelStatus] = useState<DutyStatus>('Present');
@@ -175,6 +179,51 @@ export default function App() {
       }
     });
   }, []);
+
+  // Listen for PWA invitation to install
+  useEffect(() => {
+    const handleBeforePrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBanner(true);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforePrompt);
+
+    // If app is already started in standalone (already installed)
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
+      setShowInstallBanner(false);
+    }
+
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforePrompt);
+  }, []);
+
+  const handlePwaInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      try {
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          setShowInstallBanner(false);
+          setDeferredPrompt(null);
+          showToast("Thank you for installing Duty Tracker Pro!");
+        }
+      } catch (err) {
+        console.error("Installation error:", err);
+      }
+    } else {
+      // Manual prompt steps for iOS Safari and other browsers
+      showModalPwaInfo();
+    }
+  };
+
+  const showModalPwaInfo = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    if (isIOS) {
+       alert("📲 INSTALL ROOTED PROTOCOL:\n\n1. Tap the Share button at the bottom of Safari.\n2. Scroll down & select 'Add to Home Screen'.\n3. Start using premium tracker!");
+    } else {
+       alert("📲 PWA INSTALL PILOT:\n\n1. Click the Browser options (3-dots list) on top right.\n2. Select 'Install app' or 'Add to Home Screen'.\n3. Launch from your home screen directly!");
+    }
+  };
 
   // Ads service listener
   useEffect(() => {
@@ -1005,161 +1054,297 @@ export default function App() {
   // Auth screen layout
   if (!uid) {
     return (
-      <div className="relative min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-5">
-        <div className="w-full max-w-sm bg-zinc-900 border border-zinc-800 p-8 rounded-3xl">
-          <div className="text-center mb-6">
-            <i className="fas fa-shield-alt text-5xl text-blue-500 mb-3 animate-pulse"></i>
-            <h1 className="text-3xl font-extrabold text-white">Duty Tracker <span className="text-blue-500">Pro</span></h1>
-            <p className="text-zinc-400 text-xs mt-1">Standalone workspace management platform</p>
+      <div className="relative min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 selection:bg-blue-600 selection:text-white">
+        
+        {/* Background ambient decorative blurs */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative z-10 transition-all duration-300">
+          
+          {/* Brand Presentation Section with Custom Premium Logo */}
+          <div className="text-center mb-8">
+            <div className="relative inline-block mb-3 group">
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+              <img 
+                src="https://i.ibb.co/1fngZNzk/icon-512.png" 
+                alt="Duty Tracker Pro Logo" 
+                className="relative w-16 h-16 rounded-2xl object-cover border border-zinc-700/50 shadow-md transform group-hover:scale-105 transition-all duration-300" 
+              />
+            </div>
+            <h1 className="text-2xl font-black text-white tracking-tight">
+              Duty Tracker <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Pro</span>
+            </h1>
+            <p className="text-zinc-400 text-xs mt-1 font-medium">Professional Duty & Advanced Ledger Suite</p>
           </div>
 
-          <div className="auth-tabs flex bg-zinc-950 p-1 rounded-full mb-6 border border-zinc-800">
+          {/* Quick PWA Installation Indicator if browser supports it */}
+          {showInstallBanner && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-zinc-950 to-zinc-900 border border-blue-500/20 rounded-2xl flex items-center justify-between gap-3 animate-fade-in">
+              <div className="flex items-center gap-3">
+                <img src="https://i.ibb.co/1fngZNzk/icon-512.png" alt="App Logo" className="w-9 h-9 rounded-xl object-cover" />
+                <div className="text-left">
+                  <h4 className="text-xs font-bold text-white">Duty Tracker Pro</h4>
+                  <p className="text-[10px] text-zinc-400">Install app for fast offline access</p>
+                </div>
+              </div>
+              <button 
+                onClick={handlePwaInstall}
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs font-extrabold text-white rounded-lg transition-all shadow-md shadow-blue-600/20"
+              >
+                INSTALL <i className="fas fa-download ml-1 text-[9px]"></i>
+              </button>
+            </div>
+          )}
+
+          {/* Luxury Tab Switcher */}
+          <div className="flex bg-zinc-950 p-1.5 rounded-2xl mb-6 border border-zinc-800">
             <button 
-              className={`flex-1 py-2 text-sm font-semibold rounded-full transition-all ${activeTab === 'login' ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}
+              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-350 flex items-center justify-center gap-2 ${activeTab === 'login' ? 'bg-zinc-800 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'}`}
               onClick={() => setActiveTab('login')}
             >
-              Login
+              <i className="fas fa-sign-in-alt text-[10px]"></i>
+              Employee Login
             </button>
             <button 
-              className={`flex-1 py-2 text-sm font-semibold rounded-full transition-all ${activeTab === 'signup' ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}
+              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-350 flex items-center justify-center gap-2 ${activeTab === 'signup' ? 'bg-zinc-800 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'}`}
               onClick={() => setActiveTab('signup')}
             >
-              Register
+              <i className="fas fa-user-plus text-[10px]"></i>
+              Employer Register
             </button>
           </div>
 
           {activeTab === 'login' ? (
-            <div className="space-y-4">
-              <span className="label-text">Cellular dial</span>
-              <div className="flex gap-2 mb-4">
-                <button 
-                  className="w-24 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-sm"
-                  onClick={() => setShowCountryModal('login')}
-                >
-                  {authCountry.c} ▾
-                </button>
-                <input 
-                  type="number" 
-                  placeholder="Phone Number" 
-                  className="inp flex-1 !m-0"
-                  value={authPhone}
-                  onChange={(e) => setAuthPhone(e.target.value)}
-                />
+            <div className="space-y-4 text-left">
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Cellular Dial</label>
+                <div className="flex gap-2.5">
+                  {/* Styled Country Custom Selection Row Dropdown */}
+                  <button 
+                    type="button"
+                    className="w-24 px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40"
+                    onClick={() => setShowCountryModal('login')}
+                  >
+                    <span>{authCountry.c}</span>
+                    <i className="fas fa-chevron-down text-[8px] text-zinc-500"></i>
+                  </button>
+                  <input 
+                    type="number" 
+                    placeholder="Phone Number" 
+                    className="inp flex-1 !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authPhone}
+                    onChange={(e) => setAuthPhone(e.target.value)}
+                  />
+                </div>
               </div>
 
-              <span className="label-text">Security Code (PIN)</span>
-              <input 
-                type="password" 
-                maxLength={4}
-                placeholder="4-digit PIN" 
-                className="inp"
-                value={authPin}
-                onChange={(e) => setAuthPin(e.target.value)}
-              />
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Security Code (PIN)</label>
+                <div className="relative">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                    <i className="fas fa-lock"></i>
+                  </div>
+                  <input 
+                    type="password" 
+                    maxLength={4}
+                    placeholder="Enter 4-digit PIN" 
+                    className="inp pl-10 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authPin}
+                    onChange={(e) => setAuthPin(e.target.value)}
+                  />
+                </div>
+              </div>
 
-              <button className="btn btn-primary mt-4" onClick={handleLogin}>
-                Verify & Unlock <i className="fas fa-lock-open ml-1"></i>
+              <button 
+                className="w-full mt-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2" 
+                onClick={handleLogin}
+              >
+                <span>VERIFY & UNLOCK SYSTEM</span>
+                <i className="fas fa-unlock-alt text-[10px]"></i>
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              <span className="label-text">Legal Full Name</span>
-              <input 
-                type="text" 
-                placeholder="John Doe" 
-                className="inp"
-                value={authName}
-                onChange={(e) => setAuthName(e.target.value)}
-              />
-
-              <span className="label-text">Primary Email ID</span>
-              <input 
-                type="email" 
-                placeholder="me@domain.com" 
-                className="inp"
-                value={authEmail}
-                onChange={(e) => setAuthEmail(e.target.value)}
-              />
-
-              <span className="label-text">Cellular Connection</span>
-              <div className="flex gap-2">
-                <button 
-                  className="w-24 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-sm"
-                  onClick={() => setShowCountryModal('signup')}
-                >
-                  {authCountry.c} ▾
-                </button>
-                <input 
-                  type="number" 
-                  placeholder="Cell Number" 
-                  className="inp flex-1 !m-0"
-                  value={authPhone}
-                  onChange={(e) => setAuthPhone(e.target.value)}
-                />
+            <div className="space-y-4 text-left">
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Legal Name</label>
+                <div className="relative">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                    <i className="fas fa-user-circle"></i>
+                  </div>
+                  <input 
+                    type="text" 
+                    placeholder="John Doe" 
+                    className="inp pl-10 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authName}
+                    onChange={(e) => setAuthName(e.target.value)}
+                  />
+                </div>
               </div>
 
-              <span className="label-text">Set 4-digit PIN</span>
-              <input 
-                type="password" 
-                maxLength={4}
-                placeholder="PIN digits (0-9)" 
-                className="inp"
-                value={authPin}
-                onChange={(e) => setAuthPin(e.target.value)}
-              />
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Primary Email ID</label>
+                <div className="relative">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                    <i className="fas fa-envelope"></i>
+                  </div>
+                  <input 
+                    type="email" 
+                    placeholder="me@domain.com" 
+                    className="inp pl-10 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                  />
+                </div>
+              </div>
 
-              <span className="label-text">Confirm PIN digits</span>
-              <input 
-                type="password" 
-                maxLength={4}
-                placeholder="Confirm digits" 
-                className="inp"
-                value={authPinConfirm}
-                onChange={(e) => setAuthPinConfirm(e.target.value)}
-              />
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Cellular Connection</label>
+                <div className="flex gap-2.5">
+                  <button 
+                    type="button"
+                    className="w-24 px-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800/80 rounded-xl text-white text-xs font-bold flex items-center justify-between transition-colors focus:ring-1 focus:ring-blue-500/40"
+                    onClick={() => setShowCountryModal('signup')}
+                  >
+                    <span>{authCountry.c}</span>
+                    <i className="fas fa-chevron-down text-[8px] text-zinc-500"></i>
+                  </button>
+                  <input 
+                    type="number" 
+                    placeholder="Cell Number" 
+                    className="inp flex-1 !m-0 bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authPhone}
+                    onChange={(e) => setAuthPhone(e.target.value)}
+                  />
+                </div>
+              </div>
 
-              <button className="btn btn-primary" onClick={handleSignup}>
-                Register Workspace <i className="fas fa-check-circle ml-1"></i>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Set 4-digit PIN</label>
+                  <input 
+                    type="password" 
+                    maxLength={4}
+                    placeholder="Set PIN" 
+                    className="inp text-center tracking-widest bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authPin}
+                    onChange={(e) => setAuthPin(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider font-extrabold text-zinc-400 mb-2">Confirm PIN</label>
+                  <input 
+                    type="password" 
+                    maxLength={4}
+                    placeholder="Confirm" 
+                    className="inp text-center tracking-widest bg-zinc-950 hover:border-zinc-700/80 transition-colors focus:ring-1 focus:ring-blue-500"
+                    value={authPinConfirm}
+                    onChange={(e) => setAuthPinConfirm(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <button 
+                className="w-full mt-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white text-xs font-black rounded-xl transition-all shadow-lg shadow-blue-600/10 flex items-center justify-center gap-2" 
+                onClick={handleSignup}
+              >
+                <span>CREATE WORKSPACE SECURELY</span>
+                <i className="fas fa-check-circle text-[10px]"></i>
               </button>
             </div>
           )}
         </div>
 
-        {/* Searching Country Modal inside auth screen */}
+        {/* Searching Country Modal inside auth screen (Professional Bottom-Sheet Style) */}
         {showCountryModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/90 p-5 z-50">
-            <div className="bg-zinc-900 border border-zinc-800 max-w-sm w-full p-6 rounded-2xl flex flex-col h-[70vh]">
+          <div className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-4 z-50 animate-fade-in">
+            <div className="bg-zinc-900 border border-zinc-800/80 max-w-md w-full p-6 rounded-t-3xl sm:rounded-3xl flex flex-col h-[80vh] shadow-2xl relative animate-slide-up">
+              
+              <div className="w-12 h-1 bg-zinc-700 rounded-full mx-auto mb-4 sm:hidden"></div>
+              
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-white font-extrabold text-lg">Select Dial Code</h3>
-                <button className="text-zinc-400 text-lg" onClick={() => setShowCountryModal(null)}>&times;</button>
+                <div>
+                  <h3 className="text-white font-extrabold text-lg">Select Country Code</h3>
+                  <p className="text-xs text-zinc-500">Pick dial prefix of your residence</p>
+                </div>
+                <button 
+                  className="w-8 h-8 rounded-full bg-zinc-850 hover:bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm transition-colors" 
+                  onClick={() => {
+                    setShowCountryModal(null);
+                    setCountrySearch('');
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
               </div>
-              <input 
-                type="text" 
-                placeholder="Search by country or code..."
-                className="inp mb-4 text-sm"
-                value={countrySearch}
-                onChange={(e) => setCountrySearch(e.target.value)}
-              />
-              <div className="flex-1 overflow-y-auto space-y-2">
+
+              {/* Real-time search bar */}
+              <div className="relative mb-4">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">
+                  <i className="fas fa-search"></i>
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Search countries by name or prefix..."
+                  className="inp pl-10 mb-0 text-sm bg-zinc-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  value={countrySearch}
+                  onChange={(e) => setCountrySearch(e.target.value)}
+                />
+              </div>
+
+              {/* Popular quick-select chips */}
+              <div className="mb-4">
+                <span className="text-[10px] uppercase font-bold text-zinc-500 block mb-2">QUICK SELECTION</span>
+                <div className="flex gap-2 flex-wrap">
+                  {[
+                    { n: "Bangladesh", c: "+880", f: "🇧🇩" },
+                    { n: "India", c: "+91", f: "🇮🇳" },
+                    { n: "Saudi Arabia", c: "+966", f: "🇸🇦" },
+                    { n: "UAE", c: "+971", f: "🇦🇪" },
+                    { n: "Malaysia", c: "+60", f: "🇲🇾" },
+                    { n: "Qatar", c: "+974", f: "🇶🇦" }
+                  ].map((pop) => (
+                    <button
+                      key={pop.n}
+                      type="button"
+                      className="px-3 py-1.5 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs font-bold text-zinc-200 hover:text-white transition-colors flex items-center gap-1.5 focus:outline-none"
+                      onClick={() => {
+                        setAuthCountry({ n: pop.n, c: pop.c });
+                        setShowCountryModal(null);
+                        setCountrySearch('');
+                      }}
+                    >
+                      <span className="text-sm">{pop.f}</span>
+                      <span>{pop.n} ({pop.c})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                <div className="text-[10px] uppercase font-bold text-zinc-500 mb-2">ALL COUNTRIES</div>
                 {filterCountries(countrySearch).map(c => (
                   <div 
                     key={c.n}
-                    className="p-3 bg-zinc-950 rounded-xl text-sm hover:bg-zinc-800 cursor-pointer text-zinc-300 flex justify-between"
+                    className="px-4 py-3 bg-zinc-950 rounded-2xl text-xs hover:bg-zinc-800 cursor-pointer text-zinc-300 flex justify-between items-center transition-colors group"
                     onClick={() => {
                       setAuthCountry(c);
                       setShowCountryModal(null);
                       setCountrySearch('');
                     }}
                   >
-                    <span>{c.n}</span>
-                    <span className="font-bold text-blue-500">{c.c}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-zinc-700 group-hover:bg-blue-500 transition-colors"></span>
+                      <span className="font-semibold">{c.n}</span>
+                    </div>
+                    <span className="font-extrabold text-blue-400 bg-blue-950/40 px-2.5 py-1 rounded-lg border border-blue-900/40">{c.c}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         )}
-        {toastMsg && <div className="fixed bottom-8 left-50 -translate-x-50 z-50 p-4 bg-zinc-800 text-white rounded-full text-xs shadow-xl">{toastMsg}</div>}
+        {toastMsg && <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 bg-zinc-900 border border-zinc-800 text-white rounded-full text-xs font-bold shadow-2xl tracking-wide flex items-center gap-2 animate-slide-up"><i className="fas fa-info-circle text-blue-500"></i> {toastMsg}</div>}
       </div>
     );
   }
@@ -1247,11 +1432,11 @@ export default function App() {
             <i className="fas fa-adjust"></i>
           </button>
           <img 
-            src={profile.img || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} 
+            src={profile.img || "https://i.ibb.co/1fngZNzk/icon-512.png"} 
             className="w-8 h-8 rounded-full border-2 border-primary object-cover cursor-pointer"
             alt="Profile avatar"
             onClick={() => setCurrentView('profile')}
-            onError={(e) => { (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'; }}
+            onError={(e) => { (e.target as HTMLImageElement).src = 'https://i.ibb.co/1fngZNzk/icon-512.png'; }}
           />
         </div>
       </nav>
@@ -1611,10 +1796,10 @@ export default function App() {
             <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-3xl text-center space-y-3 relative overflow-hidden">
               <div className="relative w-24 h-24 mx-auto">
                 <img 
-                  src={profile.img || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} 
+                  src={profile.img || "https://i.ibb.co/1fngZNzk/icon-512.png"} 
                   className="w-full h-full rounded-full border-4 border-blue-500 object-cover"
                   alt="Profile"
-                  onError={(e) => { (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'; }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = 'https://i.ibb.co/1fngZNzk/icon-512.png'; }}
                 />
                 <label className="absolute bottom-1 right-1 bg-blue-500 text-white rounded-full p-2 text-xs border border-zinc-900 cursor-pointer shadow-md">
                   <i className="fas fa-camera"></i>

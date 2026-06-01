@@ -7,7 +7,7 @@ const ASSETS = [
   './src/index.css',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+  'https://i.ibb.co/1fngZNzk/icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {
