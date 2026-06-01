@@ -1,0 +1,6 @@
+{
+  "name": "Duty Tracker Pro",
+  "description": "Professional duty, attendance, salary and advance tracker with offline PWA support and salary reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
